@@ -1,0 +1,74 @@
+
+Ad-hoc commands examples:
+
+## To get facts (or check information) about the hosts
+
+[ec2-user@ip-172-31-33-0 ~]$ ansible localhost -m setup
+
+## To install apache webserver using 'yum'; 
+## Syntax details:
+##		name=httpd 	  --> service name
+##		state=present --> to install
+## 		state=absent  --> to remove/uninstall
+##		'-b' option	  --> to run the command as 'root'
+
+[ec2-user@ip-172-31-33-0 ~]$ ansible localhost -m yum -a "name=httpd state=present" -b 
+
+## If you try to run the same command again, it will not run the installer for second time, 
+## but just check for the current version and show the version
+
+[ec2-user@ip-172-31-33-0 ~]$ ansible localhost -m yum -a "name=httpd state=present" -b 
+ [WARNING]: provided hosts list is empty, only localhost is available. Note
+that the implicit localhost does not match 'all'
+
+localhost | SUCCESS => {
+    "changed": false, 
+    "failed": false, 
+    "msg": "", 
+    "rc": 0, 
+    "results": [
+        "httpd-2.4.37-1.amzn2.0.1.x86_64 providing httpd is already installed"
+    ]
+}
+
+
+## To uninstall
+[ec2-user@ip-172-31-33-0 ~]$ ansible localhost -m yum -a "name=httpd state=absent" -b 
+
+## Similar command can be used to make changes for multiple servers at once;
+## by using hosts file, which has ip addresses for all the servers
+
+##To install services on remote machines; we can add ip addresses to a file and use it in the command
+
+[ec2-user@ip-172-31-33-0 ~]$ ansible all -i servers -m yum -a "name=httpd state=absent" -b
+
+## 'servers' is the name of the file, which contains ip addresses; In my case only one IP address
+##  [ec2-user@ip-172-31-33-0 ~]$ cat servers 
+## 172.31.43.162
+
+##To start the httpd service, module 'service' can be used
+[ec2-user@ip-172-31-33-0 ~]$ ansible all -i servers -m service -a "name=httpd state=started" -b
+172.31.43.162 | SUCCESS => {
+    "changed": true, 
+    "failed": false, 
+    "name": "httpd", 
+    "state": "started",
+	
+##Module 'command': to run any commands on hosts
+
+[ec2-user@ip-172-31-33-0 ~]$ ansible all -i hosts -m command -a "ls /etc/sysconfig/network-scripts/ -l" 
+
+[ec2-user@ip-172-31-33-0 ~]$ ansible all -i hosts -m command -a "df -h" 
+172.31.43.162 | SUCCESS | rc=0 >>
+Filesystem      Size  Used Avail Use% Mounted on
+devtmpfs        475M     0  475M   0% /dev
+tmpfs           492M     0  492M   0% /dev/shm
+tmpfs           492M  444K  492M   1% /run
+tmpfs           492M     0  492M   0% /sys/fs/cgroup
+/dev/xvda1      8.0G  1.3G  6.8G  16% /
+tmpfs            99M     0   99M   0% /run/user/1000
+
+[ec2-user@ip-172-31-33-0 ~]$ 
+
+##Module 'user': Add/delete users
+
