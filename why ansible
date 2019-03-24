@@ -1,0 +1,17 @@
+Learning Ansible 
+
+Use cases
+- Configuration Management
+- Security and Compliance
+- Application Deployment
+- Orchestration
+- CI/CD
+- Provisioning
+
+
+To install ansible
+	- pip install ansible (or)
+	- yum install ansible
+
+Playbooks
+	- written in YAML
