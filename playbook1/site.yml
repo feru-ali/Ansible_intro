@@ -3,3 +3,25 @@
   hosts: webservers
  # remote_user: ec2_user
   become: yes
+
+  tasks: 
+#  - name: install epel repo
+#    yum: name=epel-release state=present
+  
+  - name: install python bindings for SELinux
+    yum: name={{item}} state=present
+    with_items:
+    - libselinux-python
+    - libsemanage-python
+
+  - name: test if python is installed 
+    command: which python
+    register: sestatus                #to register the previous command output to a variable named 'sestatus'
+    changed_when: false               #as this is only checking status for python; disabling the change count
+
+  - name: install httpd
+    yum: name=httpd state=latest       
+ 
+  - name: start httpd
+    service: pkg=httpd state=started enabled=yes      #pkg is same as name (and either can be used) ;
+
