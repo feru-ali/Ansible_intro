@@ -1,0 +1,23 @@
+[ec2-user@ip-172-31-33-0 ansible_playbooks]$ ansible-playbook -i hosts site.yml 
+
+PLAY [install and start apache] *************************************************************
+
+TASK [Gathering Facts] **********************************************************************
+ok: [172.31.43.162]
+
+TASK [install python bindings for SELinux] **************************************************
+ok: [172.31.43.162] => (item=[u'libselinux-python', u'libsemanage-python'])
+
+TASK [test if python is installed] **********************************************************
+ok: [172.31.43.162]
+
+TASK [install httpd] ************************************************************************
+changed: [172.31.43.162]
+
+TASK [start httpd] **************************************************************************
+changed: [172.31.43.162]
+
+PLAY RECAP **********************************************************************************
+172.31.43.162              : ok=5    changed=2    unreachable=0    failed=0   
+
+[ec2-user@ip-172-31-33-0 ansible_playbooks]$ 
